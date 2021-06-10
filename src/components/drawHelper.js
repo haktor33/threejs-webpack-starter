@@ -5,9 +5,10 @@ var count = 0;
 var splineArray = [];
 
 class DrawHelper {
-    constructor(scene, camera) {
+    constructor(scene, camera, controls) {
         this.scene = scene;
         this.camera = camera;
+        this.controls = controls;
         this.geo = null;
         this.material = null;
         this.mesh = null;
@@ -19,6 +20,7 @@ class DrawHelper {
     start = () => {
         this.created = true;
         this.geo = new THREE.BufferGeometry();
+        this.controls.enabled = false;
         this.positions = new Float32Array(MAX_POINTS * 3); // 3 vertices per point
         this.geo.addAttribute('position', new THREE.BufferAttribute(this.positions, 3));
         this.material = new THREE.LineBasicMaterial({ color: 0xff0000, linewidth: 10 });//new THREE.MeshBasicMaterial({ color: 0xff0000, opacity: 0.5, transparent: true });
@@ -31,6 +33,7 @@ class DrawHelper {
     stop = () => {
         document.removeEventListener('pointerdown', this.onMouseDown);
         document.removeEventListener("mousemove", this.onMouseMove);
+        this.controls.enabled = true;
     }
 
     remove = () => {

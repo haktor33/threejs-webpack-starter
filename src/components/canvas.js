@@ -61,7 +61,7 @@ const createThreeScene = () => {
     controls.domElement.addEventListener('wheel', (evt) => canvasEvents.setZoom(evt, camera, controls), false);
     controls.enableDamping = true
     controls.enableZoom = true;
-    //controls.enablePan = false;
+    controls.enablePan = false;
 
     controls.maxDistance = 50;
     controls.minDistance = 50;
@@ -81,8 +81,8 @@ const createThreeScene = () => {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     const interaction = new Interaction(renderer, scene, camera);
 
-    const drawHelper = new DrawHelper(scene, camera);
-    //drawHelper.start();
+    const drawHelper = new DrawHelper(scene, camera, controls);
+    drawHelper.start();
     const skybox = new Skybox({ ...components, scene });
     components = { ...components, controls, scene, raycaster, canvas, sizes, renderer, camera, drawHelper, skybox };
 
@@ -91,7 +91,7 @@ const createThreeScene = () => {
     * Events
     */
     document.addEventListener('resize', (evt) => canvasEvents.onResize(evt, components));
-    document.addEventListener('pointerdown', onMouseDown, false);
+    //document.addEventListener('pointerdown', onMouseDown, false);
     /**
      * Animate
      */
@@ -99,8 +99,9 @@ const createThreeScene = () => {
 }
 
 
+const vertices = [];
 const onMouseDown = (e) => {
-    if (e.which !== 3) return;
+    if (e.which === 3) return;
     e.preventDefault();
     let { scene, raycaster, sizes, camera } = components;
     let mouse = {};
@@ -111,32 +112,23 @@ const onMouseDown = (e) => {
     var mesh = scene.getObjectByName("skybox");
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects([mesh], true);
-    console.log(intersects.length)
     if (intersects.length > 0) {
         const p = intersects[0].point;
-        const uv = intersects[0].uv;
-        mesh.updateMatrixWorld();
-        const local_p = mesh.worldToLocal(p)
-        console.log(local_p);
-        console.log(uv);
+        //const uv = intersects[0].uv;
+        //mesh.updateMatrixWorld();
+        //const local_p = mesh.worldToLocal(p)
+        //console.log(local_p);
+        //console.log(uv);
+        //console.log("index:" + i);
 
-
-        const vertices = [];
-
-        for (let i = 0; i < 1; i++) {
-
-            const x = THREE.MathUtils.randFloatSpread(0);
-            const y = THREE.MathUtils.randFloatSpread(2);
-            const z = THREE.MathUtils.randFloatSpread(2);
-
-            vertices.push(x, y, z);
-
-        }
+        vertices.push(p.x, p.y, p.z);
 
         var pointsGeometry = new THREE.BufferGeometry();
         pointsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
 
-        var pointsMaterial = new THREE.PointsMaterial({ color: 0xff0000, size: 10 });
+        var color = new THREE.Color(0xffffff);
+        color.setHex(Math.random() * 0xffffff);
+        var pointsMaterial = new THREE.PointsMaterial({ color, size: 1 });
         var points = new THREE.Points(pointsGeometry, pointsMaterial);
         scene.add(points);
     }

@@ -71,7 +71,8 @@ class Skybox {
         const { scene, meshes, textures, materials, geometries } = this.components;
         const { panorama, zoomlevel } = params;
         return new Promise((resolve, reject) => {
-            const skyboxGeo = new THREE.BoxGeometry(10000, 10000, 10000);
+            //const skyboxGeo = new THREE.BoxGeometry(10000, 10000, 10000);
+            const skyboxGeo = new THREE.BoxGeometry(100, 100, 100);
             geometries.push(skyboxGeo);
             const images = panorama.getImages(zoomlevel);
             const promises = images.map(image => this.getCanvasImage(image));
