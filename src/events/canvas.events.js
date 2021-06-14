@@ -81,4 +81,15 @@ const renderScene = (components) => {
     window.requestAnimationFrame(() => renderScene(components));
 }
 
-export const canvasEvents = { setZoom, setConnectedPanoramas, clearScene, onResize, renderScene };
+const onDrawClick = (evt, btn, drawHelper) => {
+    if (btn.innerHTML === "Çizimi Başlat") {
+        btn.innerHTML = "Çizimi Durdur";
+        drawHelper.start();
+    } else {
+        btn.innerHTML = "Çizimi Başlat";
+        drawHelper.stop();
+    }
+}
+
+
+export const canvasEvents = { setZoom, setConnectedPanoramas, clearScene, onResize, renderScene, onDrawClick };

@@ -5,8 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ThreeJS Starter</title>
     <script src="./custom.js"></script>
+    <style type="text/css">
+        .ui {
+            position: absolute;
+            z-index:9999;
+        }
+    </style>
 </head>
 <body>
+    <button style="top:0" id="draw" class="ui">Çizimi Başlat</button>
     <canvas class="webgl"></canvas>
 </body>
 </html>

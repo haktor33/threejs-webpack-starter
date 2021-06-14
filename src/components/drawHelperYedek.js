@@ -2,6 +2,7 @@ import * as THREE from 'three';
 
 var MAX_POINTS = 500;
 var count = 0;
+var splineArray = [];
 
 class DrawHelper {
     constructor(scene, camera, controls, raycaster) {
@@ -16,9 +17,8 @@ class DrawHelper {
         this.mesh = null;
         this.created = false;
         this.positions = null;
-        this.vertices = [];
-        this.mouse = new THREE.Vector3();
-        this.point = new THREE.Vector3();
+        this.mouse = new THREE.Vector3();        
+        this.point = new THREE.Vector3();     
     }
 
     start = () => {
@@ -51,7 +51,7 @@ class DrawHelper {
     }
 
     updateLine = () => {
-        var positions = this.positions;
+        var positions = this.positions;      
 
         positions[count * 3 - 3] = this.mouse.x;
         positions[count * 3 - 2] = this.mouse.y;
@@ -63,38 +63,10 @@ class DrawHelper {
         this.mouse.x = (evt.clientX / window.innerWidth) * 2 - 1;
         this.mouse.y = -(evt.clientY / window.innerHeight) * 2 + 1;
         this.mouse.z = 0;
-        //this.mouse.unproject(this.camera);
+        this.mouse.unproject(this.camera);
         if (count !== 0) {
             this.updateLine();
         }
-    }
-
-    drawPolygon = () => {
-        const geometry = new THREE.BufferGeometry();
-        // create a simple square shape. We duplicate the top left and bottom right
-        // vertices because each vertex needs to appear once per triangle.
-        const vertices1 = new Float32Array([
-            -10.0, -10.0, 10.0,
-            10.0, -10.0, 6.0,
-            10.0, 10.0, 1.0,
-
-            10.0, 10.0, 1.0,
-            -10.0, 10.0, 1.0,
-            -10.0, -10.0, 1.0
-        ]);
-
-        geometry.setAttribute('position', new THREE.BufferAttribute(vertices1, 3));
-
-        color = new THREE.Color(0xffffff);
-        color.setHex(Math.random() * 0xffffff);
-
-        const material = new THREE.MeshPhongMaterial({
-            color,
-            opacity: 0.5,
-            transparent: true,
-        });
-        const mesh = new THREE.Mesh(geometry, material);
-        this.scene.add(mesh);
     }
 
     addPoint = () => {

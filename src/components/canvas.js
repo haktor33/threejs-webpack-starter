@@ -45,7 +45,6 @@ const createThreeScene = () => {
     // Lights
     const ambient = new THREE.AmbientLight(0xffffff);
     scene.add(ambient);
-
     const pointLight = new THREE.PointLight(0xffffff, 2);
     scene.add(pointLight);
 
@@ -81,17 +80,19 @@ const createThreeScene = () => {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     const interaction = new Interaction(renderer, scene, camera);
 
-    const drawHelper = new DrawHelper(scene, camera, controls);
-    drawHelper.start();
     const skybox = new Skybox({ ...components, scene });
+    const drawHelper = new DrawHelper(scene, camera, controls, raycaster);
     components = { ...components, controls, scene, raycaster, canvas, sizes, renderer, camera, drawHelper, skybox };
 
+    //buttons
+    //var drawButton = document.getElementById("draw");
 
     /**
     * Events
     */
-    document.addEventListener('resize', (evt) => canvasEvents.onResize(evt, components));
-    //document.addEventListener('pointerdown', onMouseDown, false);
+    window.addEventListener('resize', (evt) => canvasEvents.onResize(evt, components));
+    //drawButton.addEventListener("click", (evt) => canvasEvents.onDrawClick(evt, drawButton, drawHelper), false);
+    document.addEventListener('pointerdown', onMouseDown, false);
     /**
      * Animate
      */
@@ -109,9 +110,9 @@ const onMouseDown = (e) => {
     mouse.y = -(e.clientY / sizes.height) * 2 + 1;
 
 
-    var mesh = scene.getObjectByName("skybox");
+    var skyboxMesh = scene.getObjectByName("skybox");
     raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects([mesh], true);
+    const intersects = raycaster.intersectObjects([skyboxMesh], true);
     if (intersects.length > 0) {
         const p = intersects[0].point;
         //const uv = intersects[0].uv;
@@ -121,16 +122,21 @@ const onMouseDown = (e) => {
         //console.log(uv);
         //console.log("index:" + i);
 
-        vertices.push(p.x, p.y, p.z);
+        vertices.push(p.x - 10, p.y - 10, p.z);
+        vertices.push(p.x + 10, p.y - 10, p.z);
+        vertices.push(p.x + 10, p.y + 10, p.z);
+        vertices.push(p.x - 10, p.y + 10, p.z);
+        //vertices.push(-10.0, -10.0, 0.0);
+        //vertices.push(10.0, -10.0, 0.0);
+        //vertices.push(10.0, 10.0, 0.0);
 
-        var pointsGeometry = new THREE.BufferGeometry();
-        pointsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+        //var geometry = new THREE.BufferGeometry();
+        //geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
 
-        var color = new THREE.Color(0xffffff);
-        color.setHex(Math.random() * 0xffffff);
-        var pointsMaterial = new THREE.PointsMaterial({ color, size: 1 });
-        var points = new THREE.Points(pointsGeometry, pointsMaterial);
-        scene.add(points);
+        //var material = new THREE.MeshLambertMaterial({ color: 0xF3FFE2 });
+        //var mesh = new THREE.Mesh(geometry, material);
+        //scene.add(mesh);
+
     }
 
 
